@@ -1,12 +1,12 @@
 class ListController
-  def initialize(lines)
-    @lines = lines
+  def initialize(log)
+    @log = log
   end
 
   def run
     with_window do |window|
       input = Input.new(window)
-      list_state = ListState.new(lines, window.visible_line_count)
+      list_state = ListState.new(log, window.visible_line_count)
 
       command = :nop
 
@@ -26,7 +26,7 @@ class ListController
   end
 
 private
-  attr_reader :lines
+  attr_reader :log
 
   def with_window
     window = CursesWindow.new

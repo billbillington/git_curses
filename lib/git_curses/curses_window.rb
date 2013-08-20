@@ -48,13 +48,13 @@ private
       error_line_index =  screen_height - 2
       clear_line(error_line_index)
       @window.setpos(error_line_index, 0)
-      display_line("** #{message}")
+      print_line("** #{message}")
     end
   end
 
   def clear_line(index)
     @window.setpos(index, 0)
-    display_line(' ' * Curses.cols())
+    print(' ' * Curses.cols())
   end
 
   def reset_cursor
@@ -66,15 +66,28 @@ private
   end
 
   def display_lines(list_state)
-    list_state.display_items.each do |item|
-      display_line(item.fetch(:line), item.fetch(:style))
+    list_state.display_items.each_with_index do |item, index|
+      style = list_state.highlighted?(index) ? :highlight : :normal
+      print(item.fetch(:sha), style)
+      print(' - ', style)
+      if item[:branches]
+        print("#{item.fetch(:branches)} ", style)
+      end
+      print("#{item.fetch(:subject)} ", style)
+      print("#{item.fetch(:author)} ", style)
+      print("#{item.fetch(:date)} ", style)
+      print "\n"
+    end
+  end
+
+  def print(text, style = :normal)
+    @window.attron(Curses::color_pair(color_for_style(style))| Curses::A_NORMAL) do
+      @window.addstr(text)
     end
   end
 
   def display_line(line, style = :normal)
-    @window.attron(Curses::color_pair(color_for_style(style))| Curses::A_NORMAL) do
-      @window.addstr(line)
-    end
+    print("#{line}\n", style)
   end
 
   def color_for_style(style)
