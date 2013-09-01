@@ -7,6 +7,8 @@ class Input
     case next_char
     when 'q'
       :quit
+    when ' '
+      :copy_sha
     when Curses::Key::DOWN
       :move_down
     when Curses::Key::UP

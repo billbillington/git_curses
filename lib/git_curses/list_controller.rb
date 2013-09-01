@@ -9,9 +9,15 @@ class ListController
       list_state = ListState.new(log, window.visible_line_count)
 
       command = :nop
+      done = false
 
-      while command != :quit
+      while !done
         case command
+        when :quit
+          done = true
+        when :copy_sha
+          copy_sha(list_state.index)
+          done = true
         when :move_down
           list_state.move_down
         when :move_up
@@ -27,6 +33,10 @@ class ListController
 
 private
   attr_reader :log
+
+  def copy_sha(index)
+    `echo #{log[index].fetch(:sha)} | tr -d "\n" | pbcopy`
+  end
 
   def with_window
     window = CursesWindow.new

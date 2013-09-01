@@ -3,7 +3,7 @@ module GitCurses
     def initialize(log, visible_line_count)
       @log = log
       @visible_line_count = visible_line_count
-      @index = BoundedIndex.new(index: 0, max_index: log.count.as_index)
+      @line_index = BoundedIndex.new(index: 0, max_index: log.count.as_index)
       @display_index = DisplayIndex.new(
                          index: 0,
                          visible_line_count: visible_line_count,
@@ -14,7 +14,7 @@ module GitCurses
     end
 
     def move_up
-      index.move_up
+      line_index.move_up
 
       highlight.move_up
 
@@ -24,7 +24,7 @@ module GitCurses
     end
 
     def move_down
-      index.move_down
+      line_index.move_down
 
       highlight.move_down
 
@@ -45,7 +45,11 @@ module GitCurses
       log.items.slice(display_index.index, visible_line_count)
     end
 
+    def index
+      line_index.index
+    end
+
     private
-    attr_reader :index, :highlight, :display_index, :log, :visible_line_count
+    attr_reader :line_index, :highlight, :display_index, :log, :visible_line_count
   end
 end
