@@ -9,12 +9,12 @@ module GitCurses
       raise ArgumentError.new('visible_line_count supplied must be positive') if visible_line_count < 0
       raise ArgumentError.new('item_count supplied must be positive') if item_count < 0
 
-      max_index = [item_count - visible_line_count, 0].max
+      @max_index = [item_count - visible_line_count, 0].max
 
-      @internal_index = BoundedIndex.new(index: index, max_index: max_index)
+      @internal_index = options.fetch(:index_service) { BoundedIndex.method(:new) }.call(index: index, max_index: max_index)
     end
 
-    attr_reader :internal_index
+    attr_reader :internal_index, :max_index
 
     def index
       internal_index.index
